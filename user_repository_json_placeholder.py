@@ -13,31 +13,50 @@ class UserRepositoryJSONPlaceholder:
 
     @staticmethod
     def get_all():
-        user_info = httpx.get(url="https://jsonplaceholder.typicode.com/users",
-                              headers={"Accept": "application/json"}).json()
+        user_info = httpx.get(url="https://jsonplaceholder.typicode.com/users").json()
 
         users = []
 
         for user in user_info:
-            splitted_whole_name = user.get("name").split(" ")
+            split_whole_name = user.get("name").split(" ")
 
             # findall palauttaa listan
             # https://www.geeksforgeeks.org/python-regex/
-            if re.search(r'[Mm][Rr][Ss]?\.', splitted_whole_name[0]) is None:
-                firstname = splitted_whole_name[0]
+            if re.search(r'[Mm][Rr][Ss]?\.?', split_whole_name[0]) is None:
+                firstname = split_whole_name[0]
                 # Tänne lähteeksi LUT:n johdatus ohjelmointiin -oppaan arrayn käsittelykohta
-                lastname = " ".join(splitted_whole_name[1:])
+                lastname = " ".join(split_whole_name[1:])
             else:
-                firstname = splitted_whole_name[1]
-                lastname = " ".join(splitted_whole_name[2:])
+                firstname = split_whole_name[1]
+                lastname = " ".join(split_whole_name[2:])
 
-            users.append(
-                User(
-                    _id=user.get("id"),
-                    username=user.get("username"),
-                    firstname=firstname,
-                    lastname=lastname
-                )
-            )
+            users.append(User(_id=user.get("id"),
+                              username=user.get("username"),
+                              firstname=firstname,
+                              lastname=lastname))
 
         return users
+
+    @staticmethod
+    def get_by_id(user_id):
+        user_info = httpx.get(url=f"https://jsonplaceholder.typicode.com/users/{user_id}").json()
+
+        if user_info == {}:
+            return None
+
+        split_whole_name = user_info.get("name").split(" ")
+
+        # findall palauttaa listan
+        # https://www.geeksforgeeks.org/python-regex/
+        if re.search(r'[Mm][Rr][Ss]?\.?', split_whole_name[0]) is None:
+            firstname = split_whole_name[0]
+            # Tänne lähteeksi LUT:n johdatus ohjelmointiin -oppaan arrayn käsittelykohta
+            lastname = " ".join(split_whole_name[1:])
+        else:
+            firstname = split_whole_name[1]
+            lastname = " ".join(split_whole_name[2:])
+
+        return User(_id=user_info.get("id"),
+                    username=user_info.get("username"),
+                    firstname=firstname,
+                    lastname=lastname)

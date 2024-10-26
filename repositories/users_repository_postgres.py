@@ -16,15 +16,20 @@ class UsersRepositoryPostgres(UsersRepository):
     # käyttäjän tietokantaan parametreina saaduilla arvoilla. Metodista
     # palautetaan User-luokan instanssi uuden käyttäjän tiedoilla.
     def add(self, username, firstname, lastname):
-        with self.con.cursor() as cur:
-            cur.execute("INSERT INTO users (username, firstname, lastname) "
-                        "VALUES (%s, %s, %s) RETURNING *;",
-                        (username, firstname, lastname))
+        try:
+            with self.con.cursor() as cur:
+                cur.execute("INSERT INTO users (username, firstname, lastname) "
+                            "VALUES (%s, %s, %s) RETURNING *;",
+                            (username, firstname, lastname))
 
-            self.con.commit()
-            user_tuple = cur.fetchone()
+                self.con.commit()
+                user_tuple = cur.fetchone()
 
-            return User(_id=user_tuple[0],
-                        username=user_tuple[1],
-                        firstname=user_tuple[2],
-                        lastname=user_tuple[3])
+                return User(_id=user_tuple[0],
+                            username=user_tuple[1],
+                            firstname=user_tuple[2],
+                            lastname=user_tuple[3])
+
+        except Exception as e:
+            self.con.rollback()
+            raise e

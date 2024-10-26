@@ -1,5 +1,4 @@
 import os
-
 from repositories.user_repository_jsonph import UserRepositoryJSONPH
 from repositories.users_repository_mysql import UsersRepositoryMySQL
 

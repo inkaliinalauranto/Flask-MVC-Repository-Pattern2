@@ -1,7 +1,7 @@
-# Tarkoituksena on, että valmiissa koodissa ylikirjoitetaan
-# UsersRepositoryn (yliluokan) get_all-metodi tämän luokan toteutuksella
 import re
 import httpx
+from werkzeug.exceptions import NotFound
+
 from models import User
 
 
@@ -15,7 +15,6 @@ class UserRepositoryJSONPH:
         for user in user_info:
             split_whole_name = user.get("name").split(" ")
 
-            # findall palauttaa listan
             # https://www.geeksforgeeks.org/python-regex/
             if re.search(r'[Mm][Rr][Ss]?\.?', split_whole_name[0]) is None:
                 firstname = split_whole_name[0]
@@ -32,16 +31,14 @@ class UserRepositoryJSONPH:
 
         return users
 
-
     def get_by_id(self, user_id):
         user_info = httpx.get(url=f"https://jsonplaceholder.typicode.com/users/{user_id}").json()
 
         if user_info == {}:
-            return None
+            raise NotFound()
 
         split_whole_name = user_info.get("name").split(" ")
 
-        # findall palauttaa listan
         # https://www.geeksforgeeks.org/python-regex/
         if re.search(r'[Mm][Rr][Ss]?\.?', split_whole_name[0]) is None:
             firstname = split_whole_name[0]

@@ -5,16 +5,14 @@ from decorators.repository_decorator import init_repository
 
 
 # Näiden on oltava ehkä asynceja
+
+
 @get_db_conn
 @init_repository("users_repo")
 def get_all_users(repo):
     try:
         user_list = repo.get_all()
-        user_dict_list = [{"id": user.id,
-                           "username": user.username,
-                           "firstname": user.firstname,
-                           "lastname": user.lastname}
-                          for user in user_list]
+        user_dict_list = [user.to_dict() for user in user_list]
 
         return jsonify(user_dict_list)
 
@@ -28,10 +26,7 @@ def get_user_by_id(repo, user_id):
     try:
         user = repo.get_by_id(user_id)
 
-        return jsonify({"id": user.id,
-                        "username": user.username,
-                        "firstname": user.firstname,
-                        "lastname": user.lastname})
+        return jsonify(user.to_dict())
 
     except NotFound:
         return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa"}), 404
@@ -68,12 +63,7 @@ def add_user(repo):
         if added_user.id < 1:
             return jsonify({"error": "Käyttäjän lisääminen ei onnistu"}), 500
 
-        added_user_dict = {"id": added_user.id,
-                           "username": added_user.username,
-                           "firstname": added_user.firstname,
-                           "lastname": added_user.lastname}
-
-        return jsonify(added_user_dict), 201
+        return jsonify(added_user.to_dict()), 201
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500

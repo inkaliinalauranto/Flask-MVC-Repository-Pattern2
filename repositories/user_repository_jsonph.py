@@ -6,6 +6,7 @@ from models import User
 
 
 class UserRepositoryJSONPH:
+    # Tähän rakentaja, jossa kutsutaan yliluokkaa, välitetään None-yhteys
     def get_all(self):
         user_info = httpx.get(url="https://jsonplaceholder.typicode.com/users").json()
 
@@ -31,8 +32,8 @@ class UserRepositoryJSONPH:
 
         return users
 
-    @staticmethod
-    def get_by_id(user_id):
+
+    def get_by_id(self, user_id):
         user_info = httpx.get(url=f"https://jsonplaceholder.typicode.com/users/{user_id}").json()
 
         if user_info == {}:

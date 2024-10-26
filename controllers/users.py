@@ -1,9 +1,13 @@
 from flask import jsonify
+from werkzeug.exceptions import NotFound
+
 from decorators.db_conn import get_db_conn
+from decorators.db_conn_factory import init_db_conn
 from decorators.repository_decorator import init_repository
 from repositories.repository_factory import users_repository_factory
 
 
+# Näiden on oltava ehkä asynceja
 @get_db_conn
 @init_repository("users_repo")
 def get_all_users(repo):
@@ -20,11 +24,10 @@ def get_all_users(repo):
         return jsonify({"error": str(e)}), 500
 
 
-# Ei käytetty decorator injectionia, koska silloin path paramin suhteen tulee virhetilanne
-# Jos käyttäjää ei löydy, tietokantakyselyyn palautevideon error.
-def get_user_by_id(user_id):
+@get_db_conn
+@init_repository("users_repo")
+def get_user_by_id(repo, user_id):
     try:
-        repo = users_repository_factory()
         user = repo.get_by_id(user_id)
 
         return jsonify({"id": user.id,
@@ -32,5 +35,7 @@ def get_user_by_id(user_id):
                         "firstname": user.firstname,
                         "lastname": user.lastname})
 
+    except NotFound:
+        return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500

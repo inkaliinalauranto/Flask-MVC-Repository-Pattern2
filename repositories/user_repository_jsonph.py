@@ -1,18 +1,12 @@
 # Tarkoituksena on, että valmiissa koodissa ylikirjoitetaan
 # UsersRepositoryn (yliluokan) get_all-metodi tämän luokan toteutuksella
 import re
-
 import httpx
-
 from models import User
 
 
-class UserRepositoryJSONPlaceholder:
-    def __init__(self):
-        pass
-
-    @staticmethod
-    def get_all():
+class UserRepositoryJSONPH:
+    def get_all(self):
         user_info = httpx.get(url="https://jsonplaceholder.typicode.com/users").json()
 
         users = []

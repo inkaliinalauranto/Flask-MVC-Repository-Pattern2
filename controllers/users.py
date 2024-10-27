@@ -5,10 +5,7 @@ from decorators.db_conn import get_db_conn
 from decorators.repository_decorator import init_repository
 
 
-# Readme
 # Tarkasta kommentit
-
-
 @get_db_conn
 @init_repository("users_repo")
 async def get_all_users(repo):

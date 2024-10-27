@@ -20,7 +20,7 @@ MYSQL_USER=[kirjoita tähän MySQL-tietokannan käyttäjä]
 MYSQL_PW=[kirjoita tähän MySQL-tietokannan salasana, jos sellainen on. Muussa tapauksessa kirjoita: ""]
 ```
 - Jos tietokannasta löytyy versio kummallakin tietokantaohjelmistolla, voi yllä olevat muuttujat lisätä samaan *.env*-tiedostoon. Poista silloin **toinen** *DB*-muuttuja. Jäljelle jäävän *DB*-muuttujan tilalle voi kirjoittaa sen tietokantaohjelmiston nimen, jota kulloinkin on tarkoitus käyttää. Poista tässä tapauksessa myös **toinen** *DB_NAME*-muuttuja.
-- Tallenna muutokset ja tietokantaohjelmisto.
+- Tallenna muutokset ja käynnistä tietokantaohjelmisto.
 - Toteuta projektin muut konfiguraatiovaiheet vaiheet [ohjeen](./README.md) mukaan.
 
 ## CRUD-tietokantaoperaatioiden testaaminen

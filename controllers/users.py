@@ -117,3 +117,23 @@ def update_user_lastname_by_id(repo, user_id):
         return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa."}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@get_db_conn
+@init_repository("users_repo")
+def delete_user_by_id(repo, user_id):
+    try:
+        # Talletetaan removed_user-muuttujaan delete_by_id-metodin palauttama
+        # User-luokan instanssi. Metodille välitetään saatu id, jonka
+        # perusteella käyttäjä poistetaan.
+        removed_user = repo.delete_by_id(user_id)
+
+        # Jos käyttäjän poistaminen onnistuu, palautetaan funktiosta vastaus.
+        # Ei palauteta poistetun käyttäjän tietoja, koska käyttäjä on
+        # poistettu.
+        return jsonify({"response": f"Käyttäjä id:llä {removed_user.id} poistettu."})
+
+    except NotFound:
+        return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa."}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

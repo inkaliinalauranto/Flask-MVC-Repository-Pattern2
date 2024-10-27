@@ -47,14 +47,10 @@ class UsersRepository:
     # Metodi, joka päivittää käyttäjän tiedot tietokantaan id:n perusteella:
     '''alla oleviin rollbackit'''
     def update_by_id(self, user_id, username, firstname, lastname):
-        # Tarkistetaan ensin, löytyykö käyttäjää välitetyllä id:llä:
-        user = self.get_by_id(user_id)
-
-        # Jos käyttäjää ei löydy, palataan metodista None-arvolla:
-        if user is None:
-            raise NotFound()
-
         try:
+            # Tarkistetaan ensin, löytyykö käyttäjää välitetyllä id:llä:
+            self.get_by_id(user_id)
+
             # Muussa tapauksessa päivitetään käyttäjän tiedot parametreina
             # saaduilla arvoilla ja palautetaan metodista User-luokan instanssi
             # päivitetyillä tiedoilla:
@@ -77,12 +73,9 @@ class UsersRepository:
 
     # Metodi, joka päivittää käyttäjän sukunimen tietokantaan id:n perusteella:
     def update_lastname_by_id(self, user_id, lastname):
-        user = self.get_by_id(user_id)
-
-        if user is None:
-            raise NotFound
-
         try:
+            user = self.get_by_id(user_id)
+
             # Jos käyttäjä on olemassa välitetyllä id:llä, päivitetään käyttäjän
             # sukunimi parametrina saadulla arvolla ja palautetaan metodista
             # User-luokan instanssi päivitetyllä sukunimellä:
@@ -96,25 +89,28 @@ class UsersRepository:
                             username=user.username,
                             firstname=user.firstname,
                             lastname=lastname)
+
         except Exception as e:
             self.con.rollback()
             raise e
 
     # Metodi, joka poistaa käyttäjän tietokannasta id:n perusteella:
     def delete_by_id(self, user_id):
-        user = self.get_by_id(user_id)
+        try:
+            user = self.get_by_id(user_id)
 
-        if user is None:
-            return None
+            # Jos käyttäjä on olemassa välitetyllä id:llä, poistetaan käyttäjä ja
+            # palautetaan metodista User-luokan instanssi poistetun käyttäjän
+            # tiedoilla:
+            with self.con.cursor() as cur:
+                cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
+                self.con.commit()
 
-        # Jos käyttäjä on olemassa välitetyllä id:llä, poistetaan käyttäjä ja
-        # palautetaan metodista User-luokan instanssi poistetun käyttäjän
-        # tiedoilla:
-        with self.con.cursor() as cur:
-            cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
-            self.con.commit()
+                return User(_id=user_id,
+                            username=user.username,
+                            firstname=user.firstname,
+                            lastname=user.lastname)
 
-            return User(_id=user_id,
-                        username=user.username,
-                        firstname=user.firstname,
-                        lastname=user.lastname)
+        except Exception as e:
+            self.con.rollback()
+            raise e

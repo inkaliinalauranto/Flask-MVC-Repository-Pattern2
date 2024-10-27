@@ -13,8 +13,7 @@ git clone https://peke.plab.fi/ilaurant/exercise3.git
 code exercise3
 ```
 3. Luo vasemmassa laidassa näkyvän projektikansion tiedostopuun juureen *.env*-tiedosto. 
-- Kun tarkoituksena on hakea käyttäjät tai yksittäinen verkon yli, lisää tiedostoon alla oleva muuttujan määrittely: 
-- Jos käytät ohjelmaa *PostgreSQL*-tietokannan kanssa, lisää tiedostoon alla olevat muuttujat. Jos muuttujassa on hakasulut, täytä niiden tilalle tietokantakohtaiset arvot:
+- Kun tarkoituksena on hakea käyttäjät tai yksittäinen verkon yli, lisää tiedostoon alla oleva muuttujan määrittely:
 ```
 DB=internet
 ```
@@ -47,7 +46,7 @@ GET-pyynnöt lähetetään seuraaviin endpointeihin:
 
 ### Esimerkkejä
 
-Esimerkeissä .env-tiedoston DB-muuttujan arvona on internet, jolloin tiedot haetaan verkon yli eikä RUD-operaatioiden tekeminen ole mahdollista.
+Esimerkeissä *.env*-tiedoston *DB*-muuttujan arvona on *internet*, jolloin tiedot haetaan verkon yli eikä RUD-operaatioiden tekeminen ole mahdollista.
 
 Kaikkien käyttäjien hakeminen:
 
@@ -61,7 +60,7 @@ Käyttäjän hakeminen id:llä, jota ei ole olemassa:
 
 ![Käyttäjän hakeminen GET-pyynnöllä, kun käyttäjää syötetyllä käyttäjä-id:llä ei ole olemassa](./images/a3.png)
 
-Käyttäjän lisääminen (koska .env-tiedoston *DB*-muuttujan arvona on *internet*):
+Käyttäjän lisääminen (koska *.env*-tiedoston *DB*-muuttujan arvona on *internet*):
 
 ![Käyttäjän lisääminen POST-pyynnöllä ei ole mahdollista, ja se aiheuttaa virheen](./images/a4.png)
 

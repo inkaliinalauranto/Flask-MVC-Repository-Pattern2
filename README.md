@@ -13,7 +13,7 @@ git clone https://peke.plab.fi/ilaurant/exercise3.git
 code exercise3
 ```
 3. Luo vasemmassa laidassa näkyvän projektikansion tiedostopuun juureen *.env*-tiedosto. 
-- Kun tarkoituksena on hakea käyttäjät tai yksittäinen verkon yli, lisää tiedostoon alla oleva muuttujan määrittely:
+- Kun tarkoituksena on hakea käyttäjät tai yksittäinen käyttäjä verkon yli, lisää tiedostoon alla oleva muuttujan määrittely:
 ```
 DB=internet
 ```
@@ -35,6 +35,7 @@ python -m pip install -r requirements.txt
 ```
 python app.py
 ```
+Huom! Jos *.env*-tiedoston ympäristömuuttujien arvoja vaihtaa, on sovellus **pysäytettävä (`Ctrl + C`)  ja käynnistettävä uudelleen (`python app.py`)**.
 
 ## Käyttäjien hakeminen
 

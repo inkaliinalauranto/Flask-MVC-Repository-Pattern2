@@ -15,7 +15,7 @@ class UsersRepositoryPostgres(UsersRepository):
     # onko käyttöön valittu MySQL- vai PostgreSQL-tietokanta. Metodi lisää
     # käyttäjän tietokantaan parametreina saaduilla arvoilla. Metodista
     # palautetaan User-luokan instanssi uuden käyttäjän tiedoilla.
-    def add(self, username, firstname, lastname):
+    async def add(self, username, firstname, lastname):
         try:
             with self.con.cursor() as cur:
                 cur.execute("INSERT INTO users (username, firstname, lastname) "

@@ -1,6 +1,7 @@
 import os
 from repositories.user_repository_jsonph import UserRepositoryJSONPH
 from repositories.users_repository_mysql import UsersRepositoryMySQL
+from repositories.users_repository_postgres import UsersRepositoryPostgres
 
 
 def users_repository_factory(con=None):
@@ -9,7 +10,7 @@ def users_repository_factory(con=None):
     if _db == "mysql":
         repo = UsersRepositoryMySQL(con)
     elif _db == "postgres":
-        repo = UsersRepositoryMySQL(con)
+        repo = UsersRepositoryPostgres(con)
     elif _db == "internet":
         repo = UserRepositoryJSONPH()
     else:

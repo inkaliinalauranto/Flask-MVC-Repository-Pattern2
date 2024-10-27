@@ -1,4 +1,4 @@
-flask
+flask[async]
 httpx
 mysql-connector-python
 psycopg2-binary

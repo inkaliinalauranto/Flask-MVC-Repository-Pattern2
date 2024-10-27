@@ -15,7 +15,7 @@ class UsersRepository:
 
     # Metodi, joka hakee tietokannasta kaikki käyttäjät. Käyttäjät palautetaan
     # listan alkioina, jotka on muutettu User-luokan instansseiksi:
-    def get_all(self):
+    async def get_all(self):
         with self.con.cursor() as cur:
             cur.execute("SELECT * FROM users;")
             users_tuple_list = cur.fetchall()
@@ -31,7 +31,7 @@ class UsersRepository:
     # Metodi, joka hakee tietokannasta käyttäjän id:n perusteella. Jos
     # käyttäjää ei haetulla id:llä löydy, palautetaan arvo None. Muussa
     # tapauksessa käyttäjä palautetaan User-luokan instanssina:
-    def get_by_id(self, user_id):
+    async def get_by_id(self, user_id):
         with self.con.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE id = %s;", (user_id,))
             user_tuple = cur.fetchone()
@@ -46,10 +46,10 @@ class UsersRepository:
 
     # Metodi, joka päivittää käyttäjän tiedot tietokantaan id:n perusteella:
     '''alla oleviin rollbackit'''
-    def update_by_id(self, user_id, username, firstname, lastname):
+    async def update_by_id(self, user_id, username, firstname, lastname):
         try:
             # Tarkistetaan ensin, löytyykö käyttäjää välitetyllä id:llä:
-            self.get_by_id(user_id)
+            await self.get_by_id(user_id)
 
             # Muussa tapauksessa päivitetään käyttäjän tiedot parametreina
             # saaduilla arvoilla ja palautetaan metodista User-luokan instanssi
@@ -72,9 +72,9 @@ class UsersRepository:
             raise e
 
     # Metodi, joka päivittää käyttäjän sukunimen tietokantaan id:n perusteella:
-    def update_lastname_by_id(self, user_id, lastname):
+    async def update_lastname_by_id(self, user_id, lastname):
         try:
-            user = self.get_by_id(user_id)
+            user = await self.get_by_id(user_id)
 
             # Jos käyttäjä on olemassa välitetyllä id:llä, päivitetään käyttäjän
             # sukunimi parametrina saadulla arvolla ja palautetaan metodista
@@ -95,9 +95,9 @@ class UsersRepository:
             raise e
 
     # Metodi, joka poistaa käyttäjän tietokannasta id:n perusteella:
-    def delete_by_id(self, user_id):
+    async def delete_by_id(self, user_id):
         try:
-            user = self.get_by_id(user_id)
+            user = await self.get_by_id(user_id)
 
             # Jos käyttäjä on olemassa välitetyllä id:llä, poistetaan käyttäjä ja
             # palautetaan metodista User-luokan instanssi poistetun käyttäjän

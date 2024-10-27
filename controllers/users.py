@@ -1,17 +1,19 @@
+import httpx
 from flask import jsonify, request
 from werkzeug.exceptions import NotFound
 from decorators.db_conn import get_db_conn
 from decorators.repository_decorator import init_repository
 
 
-# Näiden on oltava ehkä asynceja
+# Readme
+# Tarkasta kommentit
 
 
 @get_db_conn
 @init_repository("users_repo")
-def get_all_users(repo):
+async def get_all_users(repo):
     try:
-        user_list = repo.get_all()
+        user_list = await repo.get_all()
         user_dict_list = [user.to_dict() for user in user_list]
 
         return jsonify(user_dict_list)
@@ -22,9 +24,9 @@ def get_all_users(repo):
 
 @get_db_conn
 @init_repository("users_repo")
-def get_user_by_id(repo, user_id):
+async def get_user_by_id(repo, user_id):
     try:
-        user = repo.get_by_id(user_id)
+        user = await repo.get_by_id(user_id)
 
         return jsonify(user.to_dict())
 
@@ -37,7 +39,7 @@ def get_user_by_id(repo, user_id):
 # Kommentit reposta ####
 @get_db_conn
 @init_repository("users_repo")
-def add_user(repo):
+async def add_user(repo):
     try:
         # Haetaan bodyssa saatavat tiedot request_data-muuttujaan Flaskin
         # request-ominaisuuden get_json()-metodia hyödyntämällä.
@@ -55,13 +57,7 @@ def add_user(repo):
         # Talletetaan added_user-muuttujaan add-metodin palauttama
         # instanssi. Metodille välitetään bodysta saatavien avainten arvot.
         # Metodi lisää käyttäjän tietokantaan näillä tiedoilla.
-        added_user = repo.add(username, firstname, lastname)
-
-        # Jos käyttäjäinstanssin id indikoi epäonnistuneesta
-        # tietokantaoperaatiosta, poistutaan funktiosta virheestä kertovalla
-        # json-viestillä:
-        if added_user.id < 1:
-            return jsonify({"error": "Käyttäjän lisääminen ei onnistu"}), 500
+        added_user = await repo.add(username, firstname, lastname)
 
         return jsonify(added_user.to_dict()), 201
 
@@ -71,7 +67,7 @@ def add_user(repo):
 
 @get_db_conn
 @init_repository("users_repo")
-def update_user_by_id(repo, user_id):
+async def update_user_by_id(repo, user_id):
     try:
         request_data = request.get_json()
         username = request_data.get("username")
@@ -85,7 +81,7 @@ def update_user_by_id(repo, user_id):
         # User-luokan instanssi. Metodille välitetään saatu id sekä bodysta
         # saatavien avainten arvot. Metodi päivittää käyttäjän tiedot
         # välitetyillä arvoilla välitetyn id:n perusteella.
-        updated_user = repo.update_by_id(user_id, username, firstname, lastname)
+        updated_user = await repo.update_by_id(user_id, username, firstname, lastname)
 
         return jsonify(updated_user.to_dict())
 
@@ -97,7 +93,7 @@ def update_user_by_id(repo, user_id):
 
 @get_db_conn
 @init_repository("users_repo")
-def update_user_lastname_by_id(repo, user_id):
+async def update_user_lastname_by_id(repo, user_id):
     try:
         request_data = request.get_json()
         lastname = request_data.get("lastname")
@@ -109,7 +105,7 @@ def update_user_lastname_by_id(repo, user_id):
         # palauttama User-luokan instanssi. Metodille välitetään saatu id sekä
         # bodysta saatavan avaimen arvo. Metodi päivittää käyttäjän sukunimen
         # välitetyllä arvolla välitetyn id:n perusteella.
-        updated_user = repo.update_lastname_by_id(user_id, lastname)
+        updated_user = await repo.update_lastname_by_id(user_id, lastname)
 
         return jsonify(updated_user.to_dict())
 
@@ -121,12 +117,12 @@ def update_user_lastname_by_id(repo, user_id):
 
 @get_db_conn
 @init_repository("users_repo")
-def delete_user_by_id(repo, user_id):
+async def delete_user_by_id(repo, user_id):
     try:
         # Talletetaan removed_user-muuttujaan delete_by_id-metodin palauttama
         # User-luokan instanssi. Metodille välitetään saatu id, jonka
         # perusteella käyttäjä poistetaan.
-        removed_user = repo.delete_by_id(user_id)
+        removed_user = await repo.delete_by_id(user_id)
 
         # Jos käyttäjän poistaminen onnistuu, palautetaan funktiosta vastaus.
         # Ei palauteta poistetun käyttäjän tietoja, koska käyttäjä on

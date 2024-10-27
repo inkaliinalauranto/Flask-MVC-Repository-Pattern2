@@ -52,44 +52,53 @@ class UsersRepository:
 
         # Jos käyttäjää ei löydy, palataan metodista None-arvolla:
         if user is None:
-            return None
+            raise NotFound()
 
-        # Muussa tapauksessa päivitetään käyttäjän tiedot parametreina
-        # saaduilla arvoilla ja palautetaan metodista User-luokan instanssi
-        # päivitetyillä tiedoilla:
-        with self.con.cursor() as cur:
-            cur.execute("UPDATE users "
-                        "SET username = %s, firstname = %s, lastname = %s "
-                        "WHERE id = %s;",
-                        (username, firstname, lastname, user_id,))
+        try:
+            # Muussa tapauksessa päivitetään käyttäjän tiedot parametreina
+            # saaduilla arvoilla ja palautetaan metodista User-luokan instanssi
+            # päivitetyillä tiedoilla:
+            with self.con.cursor() as cur:
+                cur.execute("UPDATE users "
+                            "SET username = %s, firstname = %s, lastname = %s "
+                            "WHERE id = %s;",
+                            (username, firstname, lastname, user_id,))
 
-            self.con.commit()
+                self.con.commit()
 
-            return User(_id=user_id,
-                        username=username,
-                        firstname=firstname,
-                        lastname=lastname)
+                return User(_id=user_id,
+                            username=username,
+                            firstname=firstname,
+                            lastname=lastname)
+
+        except Exception as e:
+            self.con.rollback()
+            raise e
 
     # Metodi, joka päivittää käyttäjän sukunimen tietokantaan id:n perusteella:
     def update_lastname_by_id(self, user_id, lastname):
         user = self.get_by_id(user_id)
 
         if user is None:
-            return None
+            raise NotFound
 
-        # Jos käyttäjä on olemassa välitetyllä id:llä, päivitetään käyttäjän
-        # sukunimi parametrina saadulla arvolla ja palautetaan metodista
-        # User-luokan instanssi päivitetyllä sukunimellä:
-        with self.con.cursor() as cur:
-            cur.execute("UPDATE users SET lastname = %s WHERE id = %s;",
-                        (lastname, user_id,))
+        try:
+            # Jos käyttäjä on olemassa välitetyllä id:llä, päivitetään käyttäjän
+            # sukunimi parametrina saadulla arvolla ja palautetaan metodista
+            # User-luokan instanssi päivitetyllä sukunimellä:
+            with self.con.cursor() as cur:
+                cur.execute("UPDATE users SET lastname = %s WHERE id = %s;",
+                            (lastname, user_id,))
 
-            self.con.commit()
+                self.con.commit()
 
-            return User(_id=user_id,
-                        username=user.username,
-                        firstname=user.firstname,
-                        lastname=lastname)
+                return User(_id=user_id,
+                            username=user.username,
+                            firstname=user.firstname,
+                            lastname=lastname)
+        except Exception as e:
+            self.con.rollback()
+            raise e
 
     # Metodi, joka poistaa käyttäjän tietokannasta id:n perusteella:
     def delete_by_id(self, user_id):

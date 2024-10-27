@@ -67,3 +67,53 @@ def add_user(repo):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@get_db_conn
+@init_repository("users_repo")
+def update_user_by_id(repo, user_id):
+    try:
+        request_data = request.get_json()
+        username = request_data.get("username")
+        firstname = request_data.get("firstname")
+        lastname = request_data.get("lastname")
+
+        if not username or not firstname or not lastname:
+            return jsonify({"error": "Vääränlainen request body"}), 400
+
+        # Talletetaan updated_user-muuttujaan update_by_id-metodin palauttama
+        # User-luokan instanssi. Metodille välitetään saatu id sekä bodysta
+        # saatavien avainten arvot. Metodi päivittää käyttäjän tiedot
+        # välitetyillä arvoilla välitetyn id:n perusteella.
+        updated_user = repo.update_by_id(user_id, username, firstname, lastname)
+
+        return jsonify(updated_user.to_dict())
+
+    except NotFound:
+        return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@get_db_conn
+@init_repository("users_repo")
+def update_user_lastname_by_id(repo, user_id):
+    try:
+        request_data = request.get_json()
+        lastname = request_data.get("lastname")
+
+        if not lastname:
+            return jsonify({"error": "Vääränlainen request body"}), 400
+
+        # Talletetaan updated_user-muuttujaan update_lastname_by_id-metodin
+        # palauttama User-luokan instanssi. Metodille välitetään saatu id sekä
+        # bodysta saatavan avaimen arvo. Metodi päivittää käyttäjän sukunimen
+        # välitetyllä arvolla välitetyn id:n perusteella.
+        updated_user = repo.update_lastname_by_id(user_id, lastname)
+
+        return jsonify(updated_user.to_dict())
+
+    except NotFound:
+        return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa."}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

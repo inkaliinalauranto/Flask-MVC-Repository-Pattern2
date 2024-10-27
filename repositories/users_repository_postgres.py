@@ -6,8 +6,11 @@ from repositories.users_repository import UsersRepository
 
 # Luokka perii UsersRepository-luokan:
 class UsersRepositoryPostgres(UsersRepository):
+    # Rakentajametodi, joka vastaanottaa parametrina tietokantayhteyden:
     def __init__(self, con):
         self.con = con
+        # Kutsutaan yliluokan rakentajaa, jonka jäsenmuuttujaksi välitetään
+        # tämän luokan jäsenmuuttuja eli avattu tietokantayhteys:
         super(UsersRepositoryPostgres, self).__init__(con)
 
     # Käyttäjän tietokantaan lisäävä metodi on RUD-metodeista poiketen
@@ -31,5 +34,6 @@ class UsersRepositoryPostgres(UsersRepository):
                             lastname=user_tuple[3])
 
         except Exception as e:
+            # Jos metodi epäonnistuu, perutaan tietokantaoperaatio:
             self.con.rollback()
             raise e

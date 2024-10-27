@@ -6,9 +6,11 @@ from repositories.users_repository import UsersRepository
 
 # Luokka perii UsersRepository-luokan:
 class UsersRepositoryMySQL(UsersRepository):
-    # Rakentajametodi
+    # Rakentajametodi, joka vastaanottaa parametrina tietokantayhteyden:
     def __init__(self, con):
         self.con = con
+        # Kutsutaan yliluokan rakentajaa, jonka jäsenmuuttujaksi välitetään
+        # tämän luokan jäsenmuuttuja eli avattu tietokantayhteys:
         super().__init__(con)
 
     # Käyttäjän tietokantaan lisäävä metodi on RUD-metodeista poiketen
@@ -30,5 +32,6 @@ class UsersRepositoryMySQL(UsersRepository):
                             lastname=lastname)
 
         except Exception as e:
+            # Jos metodi epäonnistuu, perutaan tietokantaoperaatio:
             self.con.rollback()
             raise e

@@ -4,15 +4,27 @@ from werkzeug.exceptions import NotFound
 from decorators.db_conn import get_db_conn
 from decorators.repository_decorator import init_repository
 
+'''Controller-funktiot saavat init_repository-dekoraattorin kautta 
+repo-parametrin, joka on instanssi DB-ympäristömuuttujan perusteella 
+määritetystä repositorioluokasta. Repositorioluokkainstanssi saa puolestaan 
+tietokantayhteyden get_db_conn-dekoraattorin kautta. Controller-funktiot ovat 
+asynkronisia, koska niissä käytettävät tietokantaoperaatioita toteuttavat tai 
+verkon yli dataa hakevat instanssimetodit ovat asynkronisia'''
 
-# Tarkasta kommentit
+
 @get_db_conn
 @init_repository("users_repo")
 async def get_all_users(repo):
     try:
+        # Haetaan instanssin metodin palauttama lista user_list-muuttujaan.
+        # Käytetään await-avainsanaa, koska get_all-metodit ovat asynkronisia.
         user_list = await repo.get_all()
+
+        # Muutetaan listan sisällään pitämät User-luokan instanssit
+        # dictionaryiksi User-luokan to_dict-metodia hyödyntämällä:
         user_dict_list = [user.to_dict() for user in user_list]
 
+        # Muutetaan lista dictionary-alkioineen json-muotoon ja palautetaan se:
         return jsonify(user_dict_list)
 
     except Exception as e:
@@ -23,17 +35,23 @@ async def get_all_users(repo):
 @init_repository("users_repo")
 async def get_user_by_id(repo, user_id):
     try:
+        # repo-parametrissa olevan instanssin jäsenmetodia hyödyntämällä
+        # haetaan user-muuttujaan User-luokan instanssi id:n perusteella:
         user = await repo.get_by_id(user_id)
 
+        # Tehdään käyttäjäinstanssin tiedoista dictionary user-muuttujassa
+        # olevan arvon edustaman luokan to_dict-metodia hyödyntämällä.
+        # Palautetaan dictionary edelleen JSON-formaattiin muutettuna:
         return jsonify(user.to_dict())
 
+    # Jos get_by_id-metodi palauttaa NotFound-poikkeuksen, palataan funktiosta
+    # virheviestin sisältävällä JSON-objektilla ja 404-statuskoodilla:
     except NotFound:
         return jsonify({"error": f"Käyttäjää id:llä {user_id} ei ole olemassa"}), 404
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
-# Kommentit reposta ####
 @get_db_conn
 @init_repository("users_repo")
 async def add_user(repo):
@@ -52,10 +70,12 @@ async def add_user(repo):
             return jsonify({"error": "Vääränlainen request body"}), 400
 
         # Talletetaan added_user-muuttujaan add-metodin palauttama
-        # instanssi. Metodille välitetään bodysta saatavien avainten arvot.
-        # Metodi lisää käyttäjän tietokantaan näillä tiedoilla.
+        # User-instanssi. Metodille välitetään bodysta saatavien avainten
+        # arvot. Metodi lisää käyttäjän tietokantaan näillä tiedoilla.
         added_user = await repo.add(username, firstname, lastname)
 
+        # Muutetaan User-instanssi dictionaryksi ja edelleen JSON-formaattiin,
+        # ja palautetaan se resurssin luonnista kertovalla statuskoodilla:
         return jsonify(added_user.to_dict()), 201
 
     except Exception as e:

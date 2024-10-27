@@ -11,7 +11,8 @@ class UsersRepository:
         self.con = con
 
     '''Jäsenmetodit on toteutettu yliluokkaan, koska ne toimivat sekä 
-    MySQL- että PostgreSQL-tietokannoilla'''
+    MySQL- että PostgreSQL-tietokannoilla. Metodit ovat asynkronisia, 
+    koska niissä toteutetaan tietokantaoperaatioita tietokantapalvelimelle.'''
 
     # Metodi, joka hakee tietokannasta kaikki käyttäjät. Käyttäjät palautetaan
     # listan alkioina, jotka on muutettu User-luokan instansseiksi:
@@ -29,8 +30,8 @@ class UsersRepository:
             return users_list
 
     # Metodi, joka hakee tietokannasta käyttäjän id:n perusteella. Jos
-    # käyttäjää ei haetulla id:llä löydy, palautetaan arvo None. Muussa
-    # tapauksessa käyttäjä palautetaan User-luokan instanssina:
+    # käyttäjää ei haetulla id:llä löydy, palautetaan NotFound-poikkeus.
+    # Muussa tapauksessa käyttäjä palautetaan User-luokan instanssina:
     async def get_by_id(self, user_id):
         with self.con.cursor() as cur:
             cur.execute("SELECT * FROM users WHERE id = %s;", (user_id,))
@@ -45,13 +46,12 @@ class UsersRepository:
                         lastname=user_tuple[3])
 
     # Metodi, joka päivittää käyttäjän tiedot tietokantaan id:n perusteella:
-    '''alla oleviin rollbackit'''
     async def update_by_id(self, user_id, username, firstname, lastname):
         try:
             # Tarkistetaan ensin, löytyykö käyttäjää välitetyllä id:llä:
             await self.get_by_id(user_id)
 
-            # Muussa tapauksessa päivitetään käyttäjän tiedot parametreina
+            # Jos käyttäjä löytyy, päivitetään käyttäjän tiedot parametreina
             # saaduilla arvoilla ja palautetaan metodista User-luokan instanssi
             # päivitetyillä tiedoilla:
             with self.con.cursor() as cur:
@@ -68,6 +68,7 @@ class UsersRepository:
                             lastname=lastname)
 
         except Exception as e:
+            # Jos metodi epäonnistuu, perutaan tietokantaoperaatio:
             self.con.rollback()
             raise e
 
@@ -91,6 +92,7 @@ class UsersRepository:
                             lastname=lastname)
 
         except Exception as e:
+            # Jos metodi epäonnistuu, perutaan tietokantaoperaatio:
             self.con.rollback()
             raise e
 
@@ -112,5 +114,6 @@ class UsersRepository:
                             lastname=user.lastname)
 
         except Exception as e:
+            # Jos metodi epäonnistuu, perutaan tietokantaoperaatio:
             self.con.rollback()
             raise e

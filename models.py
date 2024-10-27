@@ -5,6 +5,7 @@ class User:
         self.firstname = firstname
         self.lastname = lastname
 
+    # Metodi, joka palauttaa luokan jäsenmuuttujat dictionaryna:
     def to_dict(self):
         return {"id": self.id,
                 "username": self.username,

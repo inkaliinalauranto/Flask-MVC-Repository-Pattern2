@@ -8,7 +8,6 @@ from repositories.users_repository_postgres import UsersRepositoryPostgres
 # luomaan .env-tiedoston DB-muuttujan arvon määrittelemän luokan instanssi
 # käyttäjärepositoriosta. Annetaan funktion parametrille oletusarvo,
 # jottei parametria tarvitse välttämättä välittää tätä funktiota kutsuttaessa.
-# Näin on, kun tarkoituksena on tehdä instanssi UserRepositoryJSONPH:sta.
 def users_repository_factory(con=None):
     _db = os.getenv("DB")
 

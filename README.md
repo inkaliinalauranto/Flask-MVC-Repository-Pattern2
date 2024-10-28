@@ -13,7 +13,7 @@ git clone https://peke.plab.fi/ilaurant/exercise3.git
 code exercise3
 ```
 3. Luo vasemmassa laidassa näkyvän projektikansion tiedostopuun juureen *.env*-tiedosto. 
-- Kun tarkoituksena on hakea käyttäjät tai yksittäinen käyttäjä verkon yli, lisää tiedostoon alla oleva muuttujan määrittely:
+- Kun tarkoituksena on hakea käyttäjät tai yksittäinen käyttäjä verkon yli, lisää tiedostoon alla oleva muuttujan määrittely ja tallenna muutokset:
 ```
 DB=internet
 ```

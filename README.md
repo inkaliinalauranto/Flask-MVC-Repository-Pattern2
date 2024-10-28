@@ -61,7 +61,7 @@ Käyttäjän hakeminen id:llä, jota ei ole olemassa:
 
 ![Käyttäjän hakeminen GET-pyynnöllä, kun käyttäjää syötetyllä käyttäjä-id:llä ei ole olemassa](./images/a3.png)
 
-Käyttäjän lisääminen (koska *.env*-tiedoston *DB*-muuttujan arvona on *internet*):
+Käyttäjän lisääminen ei onnistu (koska *.env*-tiedoston *DB*-muuttujan arvona on *internet*):
 
 ![Käyttäjän lisääminen POST-pyynnöllä ei ole mahdollista, ja se aiheuttaa virheen](./images/a4.png)
 

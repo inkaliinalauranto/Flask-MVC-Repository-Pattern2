@@ -1,16 +1,14 @@
-# Tehtävä 3 
-
 ## Kuvaus
 Ohjelman avulla on mahdollista hakea osoitteessa https://jsonplaceholder.typicode.com/users/ listattujen kaikkien käyttäjien tai yksittäisen käyttäjän id-, etunimi-, sukunimi- ja käyttäjänimitiedot. Lisäksi ohjelmaa on mahdollista käyttää PostgreSQL- tai MySQL-tietokantojen kanssa, jolloin ohjelman avulla pystytään suorittamaan käyttäjien tai yksittäisen käyttäjän tietokannasta hakemisen lisäksi myös käyttäjän lisääminen, käyttäjätietojen päivittäminen ja käyttäjän poistaminen.
 
 ## Projektin konfigurointi Windows-käyttöjärjestelmällä
 1. Kloonaa repositorio:
 ```
-git clone https://peke.plab.fi/ilaurant/exercise3.git
+git clone https://github.com/inkaliinalauranto/Flask-MVC-Repository-Pattern2.git
 ```
 2. Avaa projekti esim. *Visual Studio Codella*:
 ```
-code exercise3
+code Flask-MVC-Repository-Pattern2
 ```
 3. Luo vasemmassa laidassa näkyvän projektikansion tiedostopuun juureen *.env*-tiedosto. 
 - Kun tarkoituksena on hakea käyttäjät tai yksittäinen käyttäjä verkon yli, lisää tiedostoon alla oleva muuttujan määrittely ja tallenna muutokset:
